@@ -2,51 +2,51 @@
 
 **Polygon Edge and Vertex-Aware Transformer for Building Contour Extraction from Remote Sensing Images**
 
-[项目仓库](https://github.com/entropia-lw/PEVFormer)
+[Project repository](https://github.com/entropia-lw/PEVFormer)
 
-论文正在投稿中，尚未发表，目前不提供论文链接。
+The manuscript is under review and has not been published. A paper link is not available yet.
 
-PEVFormer 面向遥感图像中的建筑物矢量轮廓提取。本仓库提供小中建筑物预训练模型的推理与评估入口，以图像和建筑物候选框为输入，生成建筑物多边形。
+PEVFormer extracts building polygons from remote sensing images. This repository provides pretrained inference and evaluation for small and medium buildings, using images and building proposals as inputs.
 
-> 发布状态：小中建筑物推理代码、匹配权重和两张结果示例已整理。提供的参考预测已完成独立 CPU 指标重算；完整模型前向仍待兼容 GPU 环境验收。权重外部下载链接待补充。
+> Release status: the author reports that cloud inference is running normally. Completion of a full-validation inference run and AP/AR evaluation of its newly generated predictions has not yet been confirmed. The supplied reference predictions have passed an independent CPU metric recomputation. External checkpoint download links are pending.
 
-## 1. 发布范围
+## 1. Release scope
 
-本仓库提供 CrowdAI 小中建筑物模型的预训练推理与评测，包括：
+This release provides the following for the CrowdAI small and medium building model:
 
-- 推理所需的网络定义、配置和可变形注意力算子。
-- 预训练模型下载说明。
-- 检测候选框格式转换。
-- 多边形预测与 COCO 格式结果导出。
-- COCO Segmentation AP/AR 评估。
-- 两张预测结果示例图。
+- Network definitions, configuration files, and deformable-attention operators required for inference.
+- Pretrained checkpoint information.
+- Detection-proposal format conversion.
+- Polygon prediction and COCO-format result export.
+- COCO Segmentation AP/AR evaluation.
+- Two example visualizations.
 
-本次发布不包含完整训练流程、大建筑物模型及双分支预测合并。仅使用本仓库的小中建筑物模型，不代表复现包含大建筑物分支的完整系统结果。
+The release does not include the complete training pipeline, the large-building model, or prediction merging between branches. Results from the released model do not represent the complete system with a large-building branch.
 
-## 2. 运行流程
+## 2. Workflow
 
-准备验证图像和小中建筑物候选框，使用配套配置与预训练权重生成多边形预测 JSON，再与真实多边形标注比较，计算 AP/AR。本仓库不提供模型训练或微调步骤。
+Prepare validation images and small/medium building proposals, generate polygon predictions with the matching configuration and checkpoint, and compare the resulting JSON with ground-truth polygons to compute AP/AR. Training and fine-tuning instructions are not provided.
 
-结果示例见第 8 节，两张图均由提供本次权重的作者确认来自该模型。
+Example visualizations are shown in Section 8.
 
-## 3. 环境准备
+## 3. Environment setup
 
-### 3.1 参考环境
+### 3.1 Reference environment
 
-原云端运行环境为：
+The original cloud environment used:
 
-| 组件 | 版本或配置 |
+| Component | Version or configuration |
 |---|---|
-| 操作系统 | Ubuntu 18.04 |
+| Operating system | Ubuntu 18.04 |
 | Python | 3.8 |
 | PyTorch | 1.9.0 + CUDA 11.1 |
 | torchvision | 0.10.0 + CUDA 11.1 |
 | Detectron2 | 0.6 |
-| GPU | RTX 3090，24 GB |
+| GPU | RTX 3090, 24 GB |
 
-上述环境为原云端参考环境。整理版完整模型前向仍需在兼容环境中验收；本机已完成 CPU 指标重算及子模块对照，不等同于整网 CUDA 推理通过。
+The author reports normal cloud inference with the released code. Local checks cover CPU metric recomputation and selected submodule comparisons. A complete-run comparison against the reference predictions remains pending; see `VALIDATION.md`.
 
-### 3.2 获取代码
+### 3.2 Get the code
 
 ```bash
 git clone https://github.com/entropia-lw/PEVFormer.git
@@ -54,7 +54,7 @@ cd PEVFormer
 export PYTHONPATH="$PWD${PYTHONPATH:+:$PYTHONPATH}"
 ```
 
-### 3.3 创建环境并安装依赖
+### 3.3 Create an environment and install dependencies
 
 ```bash
 conda create -n pevformer python=3.8
@@ -64,24 +64,24 @@ python -m pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 \
   -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-Detectron2 需与 PyTorch/CUDA 版本匹配，可参考[官方安装说明](https://detectron2.readthedocs.io/en/latest/tutorials/install.html)。上述 Linux 组合对应的安装示例为：
+Detectron2 must match the PyTorch and CUDA versions. See the [official installation instructions](https://detectron2.readthedocs.io/en/latest/tutorials/install.html). For the Linux combination above:
 
 ```bash
 python -m pip install detectron2==0.6 \
   -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.9/index.html
 ```
 
-安装其余推理依赖：
+Install the remaining inference dependencies:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-仅重算已有预测的 COCO 指标时，可使用 `requirements-eval.txt`；不需要加载模型或使用 GPU。它不能替代模型推理环境。
+To evaluate existing prediction JSON files only, use `requirements-eval.txt`. That workflow does not load the model or require a GPU; these dependencies do not replace the inference environment.
 
-### 3.4 编译可变形注意力
+### 3.4 Build deformable attention
 
-从仓库根目录执行，需具备匹配的 CUDA Toolkit 和编译器：
+Run from the repository root. A compatible CUDA Toolkit and compiler are required.
 
 ```bash
 cd pevformer/ops
@@ -89,31 +89,31 @@ sh make.sh
 cd ../..
 ```
 
-检查依赖与 GPU：
+Check the dependencies and GPU:
 
 ```bash
 python -c "import torch, detectron2, MultiScaleDeformableAttention; print(torch.__version__); print(torch.cuda.is_available())"
 ```
 
-推理包名为 `pevformer`。请使用配套配置和权重，无需转换权重文件。
+The inference package is named `pevformer`. Use the matching configuration and checkpoint without converting checkpoint keys.
 
-## 4. 数据准备
+## 4. Data preparation
 
-CrowdAI 数据集体积较大，不随本仓库上传至 GitHub。**训练集和验证集的下载、预处理及相关标注准备，均参考 [RoIPoly 仓库的 data/crowdai 目录](https://github.com/HeinzJiao/RoIPoly/tree/main/data/crowdai)下对应的 README 文件。**请按其中训练集和验证集各自的说明操作，并遵守数据集使用条件。
+The CrowdAI dataset is too large to include in this GitHub repository. **For downloading and processing both the training and validation sets, follow the corresponding README files in the [RoIPoly data/crowdai directory](https://github.com/HeinzJiao/RoIPoly/tree/main/data/crowdai).** Follow the instructions for each split and the applicable dataset terms.
 
-本仓库只提供预训练推理与评估，运行时只需准备验证集；训练集说明用于保持与上游数据处理协议一致，不表示本仓库提供训练流程。
+Only the validation set is needed for this inference and evaluation release. The training-set reference preserves the upstream data-preparation guidance; it does not indicate that training is supported here.
 
-### 4.1 推理与评估所需文件
+### 4.1 Required inputs
 
-- 验证集图像。
-- 清洗后的真实多边形标注，用于计算 AP/AR。
-- Sparse R-CNN（Swin-B）生成的小中建筑物候选框，用于多边形模型推理。
+- Validation images.
+- Cleaned ground-truth polygon annotations for AP/AR evaluation.
+- Small/medium building proposals generated by Sparse R-CNN with a Swin-B backbone.
 
-请区分真实标注与检测候选框，不要相互替代，也不要更改图像 ID 或图像文件名。小中建筑物候选框的分流应遵循上游流程；检测框面积与真实多边形面积的处理用途不同。
+Keep ground truth and detection proposals separate. Preserve image IDs and file names, and follow the upstream small/medium proposal split. Detection-box area and ground-truth polygon area serve different purposes in data preparation.
 
-### 4.2 目录结构
+### 4.2 Directory layout
 
-以下目录与本 README 的推理、评估命令对应：
+The commands below assume:
 
 ```text
 PEVFormer/
@@ -131,43 +131,43 @@ PEVFormer/
 └── weights/
 ```
 
-文件用途：
+Input files:
 
-- `annotation_clean.json`：真实多边形标注，传入评估入口。
-- `annotation_sparsercnn_swinb_1930059_sm.json`：小中建筑物检测候选框，传入推理入口。
-- `images/`：验证集原始图像。
+- `annotation_clean.json`: ground-truth polygons supplied to the evaluation script.
+- `annotation_sparsercnn_swinb_1930059_sm.json`: small/medium detection proposals supplied to the inference script.
+- `images/`: original validation images.
 
-如果按上游说明得到的文件名或存放位置不同，请相应调整下文命令中的路径，保持图像与标注的对应关系。
+If the upstream preparation produces different file names or locations, adjust the paths in the commands while preserving image/annotation correspondence.
 
-推理命令中的 `--train-json` 和 `--train-path` 是现有入口的参数名称，此处仍应传入验证数据。
+The inference arguments `--train-json` and `--train-path` are legacy argument names. Pass validation proposals and validation images to them.
 
-## 5. 预训练模型
+## 5. Pretrained checkpoint
 
-小中建筑物模型：
+Small and medium building model:
 
-- 文件：`weights/model_2842654.pth`。
-- 配置：`configs/pevformer.res50.crowdai.sm.yaml`。
-- checkpoint 记录的迭代编号：2842654。
-- 文件大小：179,073,053 字节。
-- SHA256：`1bdbb56ff1354b61eb3c6cc0556f06d4491d6299e0925a2c6214d630253c019b`。
-- 外部下载地址：**待补充**。权重不随 Git 源码提交。
+- Checkpoint: `weights/model_2842654.pth`.
+- Configuration: `configs/pevformer.res50.crowdai.sm.yaml`.
+- Checkpoint iteration: 2842654.
+- File size: 179,073,053 bytes.
+- SHA256: `1bdbb56ff1354b61eb3c6cc0556f06d4491d6299e0925a2c6214d630253c019b`.
+- External download link: **pending**. The checkpoint is not included in Git commits.
 
-下载后保持下列路径：
+Place the downloaded checkpoint at:
 
 ```text
 weights/
 └── model_2842654.pth
 ```
 
-请使用本仓库配套的权重。推理入口对整个模型执行严格加载；出现参数缺失或形状冲突时会报错，不会静默跳过。完整模型的云端运行验收仍待完成。
+Use the checkpoint matching this release. The inference entry point loads the entire model strictly and reports missing keys or shape mismatches instead of silently skipping them. Cloud inference is reported working by the author; a complete-run comparison remains pending.
 
-使用配套检测候选框时，无需重新运行检测器。若希望从任意图像生成候选框，还需另行准备 Sparse R-CNN（Swin-B）的配置、权重和推理环境；本次目录未包含该检测器发布包。
+Provided proposal annotations can be used without rerunning the detector. To generate proposals for custom images, prepare the Sparse R-CNN (Swin-B) configuration, checkpoint, and inference environment separately. The detector package is not included in this release.
 
-## 6. 多边形推理
+## 6. Polygon inference
 
-使用 ResNet-50 小中建筑物配置和提供的预训练权重。推理代码已整理，完整图像前向尚未在本机验收；建议在上述云端参考环境运行。
+Use the ResNet-50 small/medium configuration and the matching checkpoint. Inference is reported running normally in the author's cloud environment; evaluation of the newly generated predictions has not yet been confirmed.
 
-从仓库根目录执行，确保使用新的输出目录：
+Run from the repository root with a new output directory:
 
 ```bash
 RUN_DIR="outputs/sm_$(date +%Y%m%d_%H%M%S)"
@@ -185,21 +185,21 @@ CUDA_VISIBLE_DEVICES=0 python scripts/evaluate_change.py \
   2>&1 | tee "$RUN_DIR/inference.log"
 ```
 
-该入口中的 `--iter` 用于输出文件命名。示例设为 2842654，因此输出为：
+The `--iter` argument labels the output file. With 2842654, inference produces:
 
 ```text
-outputs/<本次运行目录>/
+outputs/<run-directory>/
 ├── predictions_2842654.json
 └── inference.log
 ```
 
-预测 JSON 记录图像 ID、类别、置信度、bbox 和多边形坐标。角点阈值为 0.4，保留至少三个顶点且面积不小于 10 的多边形；正式参考结果将记录使用的全部参数。
+The JSON contains image IDs, categories, confidence scores, bounding boxes, and polygon coordinates. The example uses a corner threshold of 0.4 and keeps polygons with at least three vertices and an area of at least 10. Keep these settings when comparing with the reference results.
 
-如修改 `--iter`，请同步修改下一节的预测文件路径。
+If you change `--iter`, update the prediction file path in the evaluation command accordingly. The inference entry point exports JSON; it does not generate new visualization images.
 
-## 7. COCO Segmentation 评估
+## 7. COCO Segmentation evaluation
 
-使用真实多边形标注和本次生成的预测结果。若新开终端，请先将 `RUN_DIR` 设置为第 6 节实际使用的目录。
+Evaluate newly generated predictions against ground-truth polygons. If using a new terminal, first restore `RUN_DIR` to the directory used in Section 6.
 
 ```bash
 python scripts/evaluation.py \
@@ -210,77 +210,77 @@ python scripts/evaluation.py \
   2>&1 | tee "$RUN_DIR/evaluation.log"
 ```
 
-输出指标文件：
+The output statistics file is:
 
 ```text
 test.stats.predictions_2842654.json
 ```
 
-当前保留原云端评估协议，以便与历史实验比较：
+The original evaluation protocol is retained for comparison with previous experiments:
 
-- 采用多边形分割 IoU，输出 AP、AP50、AP75、分尺寸 AP 及 AR 系列结果。
-- 原实现只在预测 JSON 出现的图像上评估，不等同于默认覆盖全部验证图像的协议。
-- 原 AR 汇总包含 AR、AR50、AR75 和分尺寸 AR，不等同于标准默认 AR@1、AR@10、AR@100 汇总。
-- 若输出目录已有同名 stats 文件，原实现会跳过计算。对新预测使用新目录，避免误读旧结果。
+- Polygon segmentation IoU is used to report AP, AP50, AP75, size-specific AP, and AR metrics.
+- Evaluation includes only image IDs appearing in the prediction JSON, rather than all validation images by default.
+- The AR summary contains AR, AR50, AR75, and size-specific AR. It differs from the default AR@1, AR@10, and AR@100 summary.
+- If a statistics file with the same name already exists, evaluation skips recomputation. Use a new directory for new predictions.
 
-如额外提供标准全验证集评估，将单独记录协议与参考结果，不与上述结果混用。
+Any additional evaluation over the full validation-image list should be reported separately with its protocol and reference values.
 
-## 8. 结果与可视化
+## 8. Results and visualizations
 
-### 8.1 定量结果
+### 8.1 Quantitative results
 
-下列结果来自本次提供的小中建筑物模型参考预测，并已在本机 CPU 上使用原评估协议独立重算。全部 12 项指标与提供的参考统计逐项一致。
+The following results come from the supplied reference predictions for the released small/medium building checkpoint. Independent local CPU recomputation matched all 12 supplied statistics exactly.
 
-| 指标 | 结果（%） |
+| Metric | Result (%) |
 |---|---|
 | AP | 83.8830 |
 | AP50 | 94.5579 |
 | AP75 | 91.3786 |
 | AR | 87.9980 |
 
-完整指标见 `reference_results/test.stats.predictions_2842654.json`。参考预测共 485,762 个多边形，覆盖 57,177 张图像；原始验证列表有 60,317 张图像。评估图像范围和 AR 汇总定义见第 7 节。
+All metrics are available in `reference_results/test.stats.predictions_2842654.json`. The reference JSON contains 485,762 polygons across 57,177 images; the validation list contains 60,317 images. See Section 7 for the evaluated image range and AR definitions.
 
-上述数值只对应本次公开的小中建筑物模型，不包含大建筑物分支或双分支合并结果。指标重算不等同于在本机重新执行整网推理；本机验证边界见 `VALIDATION.md`。
+These values apply only to the released small/medium model and exclude the large-building branch and merged predictions. Recomputing metrics from reference predictions does not establish that newly generated predictions match them. See `VALIDATION.md` for the verification scope.
 
-### 8.2 预测结果示例
+### 8.2 Example predictions
 
-以下展示用户当前提供的两张可视化结果，包含建筑物区域的框、轮廓线与点标记。颜色图例将在作者确认其具体含义后补充。
+Two supplied examples show boxes, contour lines, and point markers. A precise color legend remains pending author confirmation.
 
-![CrowdAI 验证图像 245 的可视化结果](visualize/000000000245.jpg)
+![Visualization for CrowdAI validation image 245](visualize/000000000245.jpg)
 
-*示例 1：验证图像 245，展示建筑物区域的框与轮廓点。*
+*Example 1: validation image 245, showing building-region boxes and contour points.*
 
-![CrowdAI 验证图像 247 的可视化结果](visualize/000000000247.jpg)
+![Visualization for CrowdAI validation image 247](visualize/000000000247.jpg)
 
-*示例 2：验证图像 247，展示密集排列建筑物的可视化结果。*
+*Example 2: validation image 247, showing densely arranged buildings.*
 
-本次提供两张示例图、参考指标和可执行评估入口。完整参考预测 JSON 体积较大，外部下载链接待补充；视频和 GIS 文件不作为本次发布的必备材料。
+This release includes the two examples, reference statistics, and evaluation code. The full reference prediction JSON is too large for this Git release; an external download link is pending. Videos and GIS exports are not required for this release.
 
-## 9. 使用说明
+## 9. Usage notes
 
-- 本次只提供小中建筑物模型，不包含大建筑物分支及其合并结果。
-- 本仓库仅提供预训练推理与评估，运行时只需验证集，不需要训练集。
-- 自定义图像需先生成候选框，并核对图像 ID、尺寸、类别和框坐标格式。
-- 使用配套的源码、配置和权重，不要手动批量替换权重键；出现 missing keys、unexpected keys 或形状冲突时，应先核对版本。
-- 已有预测的 AP/AR 计算可单独进行；模型前向仍依赖 Detectron2 和自定义 CUDA 算子。
+- Only the small/medium building model is provided; the large-building branch and branch merging are excluded.
+- Inference and evaluation need validation data only, not training data.
+- Custom images require proposals with consistent image IDs, image sizes, categories, and box coordinates.
+- Use the matching source, configuration, and checkpoint. Do not rename checkpoint keys manually; check release versions if loading reports missing/unexpected keys or shape mismatches.
+- AP/AR evaluation of existing predictions can run independently. Model inference requires Detectron2 and the custom CUDA operator.
 
-## 10. 致谢
+## 10. Acknowledgements
 
-本项目基于 [RoIPoly](https://github.com/HeinzJiao/RoIPoly) 开展，并受益于 [Sparse R-CNN](https://github.com/PeizeSun/SparseR-CNN)、[Deformable DETR](https://github.com/fundamentalvision/Deformable-DETR) 和 [RoomFormer](https://github.com/ywyue/RoomFormer) 的公开实现。感谢相关作者的贡献。
+This project is based on [RoIPoly](https://github.com/HeinzJiao/RoIPoly) and benefits from the public implementations of [Sparse R-CNN](https://github.com/PeizeSun/SparseR-CNN), [Deformable DETR](https://github.com/fundamentalvision/Deformable-DETR), and [RoomFormer](https://github.com/ywyue/RoomFormer). We thank their authors for sharing their work.
 
-## 11. 许可证
+## 11. License
 
-**以下为许可证草案，正式许可将以发布时确认的根目录 LICENSE 文件及适用的第三方许可为准。**
+**This section is a draft. The final project license will be determined by the root LICENSE file once confirmed, together with applicable third-party licenses.**
 
-对于作者有权授权的项目代码，拟采用与 RoIPoly 一致的 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International（CC BY-NC-SA 4.0）](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可方向：
+For project code that the authors are entitled to license, the intended license follows RoIPoly: [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-- 使用、修改或再分发时，应保留适当署名、许可链接及修改说明。
-- 不得将受该许可约束的材料用于商业目的。
-- 再分发改编材料时，应遵守相同方式共享要求。
-- 软件按现状提供，不作保证。
+- Retain appropriate attribution, a license link, and an indication of changes when using, modifying, or redistributing the material.
+- Material covered by this license must not be used for commercial purposes.
+- Redistributed adaptations must follow the ShareAlike requirements.
+- The software is provided as is, without warranties.
 
-本项目所包含的第三方组件继续遵守各自许可证，保留原作者的版权和许可声明；本节不替代或覆盖第三方授权条件。预训练权重和数据集的使用条件将在相应下载说明中明确。
+Third-party components retain their own licenses and copyright notices. This section does not replace or override their terms. Conditions for pretrained checkpoints and datasets will be specified in their download information.
 
-## 12. 问题反馈
+## 12. Issues
 
-请通过 [GitHub Issues](https://github.com/entropia-lw/PEVFormer/issues) 反馈问题，并提供环境版本、执行命令和错误日志。
+Report problems through [GitHub Issues](https://github.com/entropia-lw/PEVFormer/issues), including environment versions, the command used, and the error log.

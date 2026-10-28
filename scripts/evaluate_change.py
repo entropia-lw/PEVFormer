@@ -55,16 +55,13 @@ def prediction(cfg):
     model = build_model(cfg)
     model.eval()
     model.load_state_dict(load_checkpoint(cfg.MODEL.WEIGHTS)['model'], strict=True)
-    has_cfe_module = any(('contour_enhancer' in name for name, _ in model.named_modules()))
-    print(f'[INFO] Model architecture has contour_enhancer module: {has_cfe_module}')
-    print(f'[INFO] Config USE_CONTOUR_ENHANCER: {cfg.MODEL.PEVFormer.USE_BAFE}')
     speed = []
     predictions = []
     total_rois = 0
     total_valid_polys = 0
     total_filtered_by_area = 0
     total_filtered_by_vertices = 0
-    for i_batch, batched_inputs in enumerate(test_iterator):
+    for batched_inputs in test_iterator:
         h, w = (batched_inputs[0]['height'], batched_inputs[0]['width'])
         instances = batched_inputs[0]['instances']
         gt_boxes = instances.gt_boxes.tensor
@@ -73,21 +70,9 @@ def prediction(cfg):
             t0 = time.time()
             outputs = model(batched_inputs)
             if isinstance(outputs, list):
-                if i_batch == 0:
-                    print('=' * 80)
-                    print('[INFO] Model output format detected: LIST')
-                    print(f'[INFO] This appears to be a PEVFormer model')
-                    print(f'[INFO] List length: {len(outputs)}')
-                    print(f'[INFO] Unpacking first element...')
-                    print('=' * 80)
                 outputs = outputs[0]
             elif isinstance(outputs, dict):
-                if i_batch == 0:
-                    print('=' * 80)
-                    print('[INFO] Model output format detected: DICT')
-                    print(f'[INFO] This appears to be a Baseline model')
-                    print(f'[INFO] No unpacking needed')
-                    print('=' * 80)
+                pass
             else:
                 raise TypeError(f"\n{'=' * 80}\n[ERROR] Model returned unexpected output type: {type(outputs)}\nExpected: dict or list[dict]\nPlease check the model's forward() function\n{'=' * 80}\n")
             t1 = time.time()
@@ -143,18 +128,8 @@ if __name__ == '__main__':
     mp.set_start_method('spawn', force=True)
     args = get_parser().parse_args()
     setup_logger(name='fvcore')
-    logger = setup_logger()
-    logger.info('Arguments: ' + str(args))
+    setup_logger()
     os.makedirs(args.output, exist_ok=True)
     cfg = setup_cfg(args)
     register_my_dataset(dataset_name='aicrowd_test', TEST_JSON=args.train_json, TEST_PATH=args.train_path)
-    print('\n' + '=' * 80)
-    print('Starting unified evaluation (evaluate_change.py)')
-    print(f'  Config file             : {args.config_file}')
-    print(f'  Output directory         : {args.output}')
-    print(f'  Checkpoint iter          : {args.iter}')
-    print(f'  Corner threshold         : {args.corner_threshold}')
-    print(f'  USE_CONTOUR_ENHANCER     : {cfg.MODEL.PEVFormer.USE_BAFE}')
-    print(f'  (auto-detected from checkpoint)')
-    print('=' * 80 + '\n')
     prediction(cfg)

@@ -1,26 +1,29 @@
-# 推理与评估验证状态
+# Inference and Evaluation Verification Status
 
-| 检查 | 结果 |
+| Check | Status |
 |---|---|
-| Python 3.8 语法检查 | 18 个 Python 文件通过 |
-| YAML 解析与权重路径 | 通过 |
-| 关键子模块权重加载与 CPU 前向对照 | 通过，测试用例输出逐元素一致 |
-| 评估命令行入口 | 通过 |
-| 真实验证标注与参考预测的 AP/AR 重算 | 全部 12 项与参考统计完全一致 |
-| 完整模型严格加载与真实图像推理 | 尚未验收 |
-| CUDA 算子重新编译与运行 | 尚未验收 |
-| 整网预测与参考结果的一致性 | 尚未验收 |
+| Python 3.8 syntax | Passed for 18 Python files |
+| YAML parsing and checkpoint path | Passed |
+| Selected submodule checkpoint loading and CPU forward comparisons | Passed; test outputs matched elementwise |
+| Evaluation command-line entry point | Passed |
+| Reference-prediction AP/AR recomputation with real validation annotations | All 12 statistics matched exactly |
+| Cloud inference execution | Reported running normally by the author |
+| Completion of a full-validation inference run | Not yet confirmed |
+| AP/AR recomputation from newly generated cloud predictions | Not yet confirmed |
+| Full-model prediction parity with the reference JSON | Not yet verified |
 
-## 已验证结果
+## Verified reference results
 
-使用真实验证标注和完整参考预测重算得到：AP=0.8388301346990471，AR=0.8799800282633958。全部 12 项指标与参考统计完全一致，最大绝对差为 0。
+Recomputation using real validation annotations and the complete reference prediction JSON produced AP=0.8388301346990471 and AR=0.8799800282633958. All 12 statistics matched the supplied values exactly, with a maximum absolute difference of zero.
 
-参考预测包含 485,762 个多边形，覆盖 57,177 张图像；验证列表有 60,317 张图像。评估沿用预测图像范围和原 AR 汇总协议，具体定义见 README 第 7 节。参考统计保存在 `reference_results/test.stats.predictions_2842654.json`。
+The reference JSON contains 485,762 polygons across 57,177 images. The validation-image list contains 60,317 images. Evaluation retains the original predicted-image range and AR summary protocol; see README Section 7. Reference statistics are stored in `reference_results/test.stats.predictions_2842654.json`.
 
-## 验证边界
+## Verification scope
 
-子模块对照使用实际权重和真实 PyTorch 运算，不使用 mock。子模块测试和已有预测的指标重算均不等于重新执行完整模型推理。
+Submodule comparisons used actual checkpoint tensors and real PyTorch operations without mocks. Submodule tests and metric recomputation from existing predictions do not establish full-model prediction parity.
 
-本机完整推理尝试因缺少兼容的 Detectron2 编译扩展和自定义 CUDA 算子运行环境而未进入整网前向。未通过安装新依赖或更改已有环境绕过该限制。
+The author reports that inference is running normally after following the cloud setup instructions. This is an author-reported runtime result, not an independently reviewed complete-run log. A completed full-validation run, its newly generated prediction JSON, and the corresponding AP/AR comparison have not yet been confirmed.
 
-完整运行验收仍需在 README 的参考环境中完成：编译 CUDA 算子、严格加载整网权重、运行真实图像推理，并对新生成的预测重算 AP/AR，与参考结果比较。
+Local full-model execution remains limited by the absence of compatible Detectron2 and custom CUDA extension runtimes. This logging cleanup does not remove those environment requirements or constitute a new end-to-end GPU test.
+
+The remaining acceptance steps are to finish validation-set inference, evaluate its newly generated predictions, and compare all reported statistics with the reference values.

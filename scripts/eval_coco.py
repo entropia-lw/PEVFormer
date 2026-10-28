@@ -42,8 +42,6 @@ def eval_one(dt_file, cocoGt, ann_type, output_dir):
 class COCOeval:
 
     def __init__(self, cocoGt=None, cocoDt=None, iouType='segm', DtImgIds=None):
-        if not iouType:
-            print('iouType未指定，使用默认iouType segm')
         self.cocoGt = cocoGt
         self.cocoDt = cocoDt
         self.params = {}
@@ -92,13 +90,9 @@ class COCOeval:
         self.eval = {}
 
     def evaluate(self):
-        tic = time.time()
-        print('运行逐图像评估...')
         p = self.params
         if p.useSegm is not None:
             p.iouType = 'segm' if p.useSegm == 1 else 'bbox'
-            print('useSegm(已弃用)不为None，运行{}评估'.format(p.iouType))
-        print('评估注释类型*{}*'.format(p.iouType))
         p.imgIds = list(np.unique(p.imgIds))
         if p.useCats:
             p.catIds = list(np.unique(p.catIds))
@@ -115,8 +109,6 @@ class COCOeval:
         maxDet = p.maxDets[-1]
         self.evalImgs = [evaluateImg(imgId, catId, areaRng, maxDet) for catId in catIds for areaRng in p.areaRng for imgId in p.imgIds]
         self._paramsEval = copy.deepcopy(self.params)
-        toc = time.time()
-        print('完成 (耗时{:0.2f}s).'.format(toc - tic))
 
     def computeIoU(self, imgId, catId):
         p = self.params
@@ -139,7 +131,7 @@ class COCOeval:
             g = [g['bbox'] for g in gt]
             d = [d['bbox'] for d in dt]
         else:
-            raise Exception('未知的iouType用于IoU计算')
+            raise Exception('Unknown iouType for IoU computation')
         iscrowd = [int(o['iscrowd']) for o in gt]
         ious = maskUtils.iou(d, g, iscrowd)
         return ious

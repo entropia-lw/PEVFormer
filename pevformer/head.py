@@ -47,7 +47,6 @@ class PolygonHead(nn.Module):
             nn.init.zeros_(geo_refine.coord_refine_head[-1].bias)
             nn.init.zeros_(geo_refine.logit_refine_head.weight)
             nn.init.zeros_(geo_refine.logit_refine_head.bias)
-            print('[GVRM-INIT] 输出头已零初始化 (coord_refine最后一层 + logit_refine)')
 
     @staticmethod
     def _init_box_pooler(cfg, input_shape):
@@ -90,7 +89,6 @@ class GAHD(nn.Module):
         self.geo_refine = None
         if use_geo_refine:
             self.geo_refine = GVR(d_model=hidden_dim, num_heads=geo_refine_num_heads, num_refine_layers=geo_refine_num_layers)
-            print(f'[GVRM] GeometricVertexRefinement enabled: heads={geo_refine_num_heads}, layers={geo_refine_num_layers}')
         self._reset_parameters()
         self.bbox_weights = bbox_weights
         self.scale_clamp = scale_clamp

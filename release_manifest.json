@@ -7,8 +7,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 12113,
-      "sha256": "f0635195ffe9ffcadd0ee14b5e297a0813fbaab0a637d6876ad5bde9124541b2"
+      "bytes": 13372,
+      "sha256": "fd2e53af36f5176f2aa03ba731b8a4079f18c74b397e7daca37de785cf1ae35a"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -17,8 +17,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "bytes": 1622,
-      "sha256": "39b41ee9f07c5c69229c627f14071b6a797337236c002bc2c7f79bf934b29e7d"
+      "bytes": 2312,
+      "sha256": "19ec91efcb6bb8a4989a399649886d5fc7d027973cdba4cf1598cbb9cf472633"
     },
     {
       "path": "configs/Base-PEVFormer.yaml",
@@ -67,8 +67,8 @@
     },
     {
       "path": "pevformer/head.py",
-      "bytes": 11559,
-      "sha256": "039a3971d6e8a6978fa3663492024b9d142cb732f2ac9d53b9ae631542a86e93"
+      "bytes": 11334,
+      "sha256": "d6f8d6acbd98a742a6b8df75028bf9abeb0b5ad795930855423aa3ab1a1d2286"
     },
     {
       "path": "pevformer/model.py",
@@ -162,13 +162,13 @@
     },
     {
       "path": "scripts/eval_coco.py",
-      "bytes": 17924,
-      "sha256": "4f64e5d6c846e4113dfd7a152e44a2f2bc3a52b4688fa40e7d32ed5723611f92"
+      "bytes": 17542,
+      "sha256": "3b9016380076ae96d0e8de2ac3eb5fb11e07ad10c4526ced2e3c9cdc2b3c42db"
     },
     {
       "path": "scripts/evaluate_change.py",
-      "bytes": 8118,
-      "sha256": "f91043387e9cfe767ce305ccf9c381526db737768993048b7c38b3f99c5aa30f"
+      "bytes": 6645,
+      "sha256": "44b41abef7f349906ac9728bd73405beb5fe0356a4cc85f2914a33811a51dfc1"
     },
     {
       "path": "scripts/evaluation.py",
@@ -228,5 +228,5 @@
       "sha256": "b9d44529a158c98473f5031e9898659e3b001e8cb721761421550fd62145cd5a"
     }
   ],
-  "validation": "See VALIDATION.md; local full model inference remains unverified."
+  "validation": "See VALIDATION.md for local checks and author-reported cloud inference status."
 }
