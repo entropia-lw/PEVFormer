@@ -1,14 +1,10 @@
-# PEVFormer
-
-**Polygon Edge and Vertex-Aware Transformer for Building Contour Extraction from Remote Sensing Images**
+PEVFormer is introduced in the paper **Polygon Edge and Vertex-Aware Transformer for Building Contour Extraction from Remote Sensing Images**. A paper link is not available yet.
 
 [Project repository](https://github.com/entropia-lw/PEVFormer)
 
-The manuscript is under review and has not been published. A paper link is not available yet.
-
 PEVFormer extracts building polygons from remote sensing images. This repository provides pretrained inference and evaluation for small and medium buildings, using images and building proposals as inputs.
 
-> Release status: the author reports that cloud inference is running normally. Completion of a full-validation inference run and AP/AR evaluation of its newly generated predictions has not yet been confirmed. The supplied reference predictions have passed an independent CPU metric recomputation. External checkpoint download links are pending.
+> Release status: the author reports that cloud inference is running normally. Completion of a full-validation inference run and AP/AR evaluation of its newly generated predictions has not yet been confirmed. The supplied reference predictions have passed an independent CPU metric recomputation. The pretrained checkpoint is available through the download link in Section 5.
 
 ## 1. Release scope
 
@@ -101,6 +97,8 @@ The inference package is named `pevformer`. Use the matching configuration and c
 
 The CrowdAI dataset is too large to include in this GitHub repository. **For downloading and processing both the training and validation sets, follow the corresponding README files in the [RoIPoly data/crowdai directory](https://github.com/HeinzJiao/RoIPoly/tree/main/data/crowdai).** Follow the instructions for each split and the applicable dataset terms.
 
+**Acquisition and preparation of all accompanying input annotations, including cleaned ground-truth polygons and small/medium building proposals, follow RoIPoly.** This release uses the upstream annotation-preparation workflow rather than a separate procedure.
+
 Only the validation set is needed for this inference and evaluation release. The training-set reference preserves the upstream data-preparation guidance; it does not indicate that training is supported here.
 
 ### 4.1 Required inputs
@@ -150,7 +148,10 @@ Small and medium building model:
 - Checkpoint iteration: 2842654.
 - File size: 179,073,053 bytes.
 - SHA256: `1bdbb56ff1354b61eb3c6cc0556f06d4491d6299e0925a2c6214d630253c019b`.
-- External download link: **pending**. The checkpoint is not included in Git commits.
+- Download: [Baidu Netdisk](https://pan.baidu.com/s/1agDdELFJqCo6OJaB61QFlw?pwd=aa9g).
+- Access code: `aa9g`.
+
+The checkpoint is distributed separately and is not included in Git commits.
 
 Place the downloaded checkpoint at:
 
