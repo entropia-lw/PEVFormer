@@ -4,30 +4,9 @@ PEVFormer is introduced in the paper **Polygon Edge and Vertex-Aware Transformer
 
 PEVFormer extracts building polygons from remote sensing images. This repository provides pretrained inference and evaluation for small and medium buildings, using images and building proposals as inputs.
 
-> Release status: the author reports that cloud inference is running normally. Completion of a full-validation inference run and AP/AR evaluation of its newly generated predictions has not yet been confirmed. The supplied reference predictions have passed an independent CPU metric recomputation. The pretrained checkpoint is available through the download link in Section 5.
+## 1. Environment setup
 
-## 1. Release scope
-
-This release provides the following for the CrowdAI small and medium building model:
-
-- Network definitions, configuration files, and deformable-attention operators required for inference.
-- Pretrained checkpoint information.
-- Detection-proposal format conversion.
-- Polygon prediction and COCO-format result export.
-- COCO Segmentation AP/AR evaluation.
-- Two example visualizations.
-
-The release does not include the complete training pipeline, the large-building model, or prediction merging between branches. Results from the released model do not represent the complete system with a large-building branch.
-
-## 2. Workflow
-
-Prepare validation images and small/medium building proposals, generate polygon predictions with the matching configuration and checkpoint, and compare the resulting JSON with ground-truth polygons to compute AP/AR. Training and fine-tuning instructions are not provided.
-
-Example visualizations are shown in Section 8.
-
-## 3. Environment setup
-
-### 3.1 Reference environment
+### 1.1 Reference environment
 
 The original cloud environment used:
 
@@ -40,9 +19,7 @@ The original cloud environment used:
 | Detectron2 | 0.6 |
 | GPU | RTX 3090, 24 GB |
 
-The author reports normal cloud inference with the released code. Local checks cover CPU metric recomputation and selected submodule comparisons. A complete-run comparison against the reference predictions remains pending; see `VALIDATION.md`.
-
-### 3.2 Get the code
+### 1.2 Get the code
 
 ```bash
 git clone https://github.com/entropia-lw/PEVFormer.git
@@ -50,7 +27,7 @@ cd PEVFormer
 export PYTHONPATH="$PWD${PYTHONPATH:+:$PYTHONPATH}"
 ```
 
-### 3.3 Create an environment and install dependencies
+### 1.3 Create an environment and install dependencies
 
 ```bash
 conda create -n pevformer python=3.8
@@ -75,7 +52,7 @@ python -m pip install -r requirements.txt
 
 To evaluate existing prediction JSON files only, use `requirements-eval.txt`. That workflow does not load the model or require a GPU; these dependencies do not replace the inference environment.
 
-### 3.4 Build deformable attention
+### 1.4 Build deformable attention
 
 Run from the repository root. A compatible CUDA Toolkit and compiler are required.
 
@@ -93,15 +70,13 @@ python -c "import torch, detectron2, MultiScaleDeformableAttention; print(torch.
 
 The inference package is named `pevformer`. Use the matching configuration and checkpoint without converting checkpoint keys.
 
-## 4. Data preparation
+## 2. Data preparation
 
 The CrowdAI dataset is too large to include in this GitHub repository. **For downloading and processing both the training and validation sets, follow the corresponding README files in the [RoIPoly data/crowdai directory](https://github.com/HeinzJiao/RoIPoly/tree/main/data/crowdai).** Follow the instructions for each split and the applicable dataset terms.
 
-**Acquisition and preparation of all accompanying input annotations, including cleaned ground-truth polygons and small/medium building proposals, follow RoIPoly.** This release uses the upstream annotation-preparation workflow rather than a separate procedure.
+**Acquisition and preparation of all accompanying input annotations, including cleaned ground-truth polygons and small/medium building proposals, follow RoIPoly.**
 
-Only the validation set is needed for this inference and evaluation release. The training-set reference preserves the upstream data-preparation guidance; it does not indicate that training is supported here.
-
-### 4.1 Required inputs
+### 2.1 Required inputs
 
 - Validation images.
 - Cleaned ground-truth polygon annotations for AP/AR evaluation.
@@ -109,7 +84,7 @@ Only the validation set is needed for this inference and evaluation release. The
 
 Keep ground truth and detection proposals separate. Preserve image IDs and file names, and follow the upstream small/medium proposal split. Detection-box area and ground-truth polygon area serve different purposes in data preparation.
 
-### 4.2 Directory layout
+### 2.2 Directory layout
 
 The commands below assume:
 
@@ -135,19 +110,12 @@ Input files:
 - `annotation_sparsercnn_swinb_1930059_sm.json`: small/medium detection proposals supplied to the inference script.
 - `images/`: original validation images.
 
-If the upstream preparation produces different file names or locations, adjust the paths in the commands while preserving image/annotation correspondence.
-
-The inference arguments `--train-json` and `--train-path` are legacy argument names. Pass validation proposals and validation images to them.
-
-## 5. Pretrained checkpoint
+## 3. Pretrained checkpoint
 
 Small and medium building model:
 
 - Checkpoint: `weights/model_2842654.pth`.
 - Configuration: `configs/pevformer.res50.crowdai.sm.yaml`.
-- Checkpoint iteration: 2842654.
-- File size: 179,073,053 bytes.
-- SHA256: `1bdbb56ff1354b61eb3c6cc0556f06d4491d6299e0925a2c6214d630253c019b`.
 - Download: [Baidu Netdisk](https://pan.baidu.com/s/1agDdELFJqCo6OJaB61QFlw?pwd=aa9g).
 - Access code: `aa9g`.
 
@@ -160,13 +128,13 @@ weights/
 └── model_2842654.pth
 ```
 
-Use the checkpoint matching this release. The inference entry point loads the entire model strictly and reports missing keys or shape mismatches instead of silently skipping them. Cloud inference is reported working by the author; a complete-run comparison remains pending.
+Use the checkpoint matching this release. The inference entry point loads the entire model strictly and reports missing keys or shape mismatches instead of silently skipping them.
 
 Provided proposal annotations can be used without rerunning the detector. To generate proposals for custom images, prepare the Sparse R-CNN (Swin-B) configuration, checkpoint, and inference environment separately. The detector package is not included in this release.
 
-## 6. Polygon inference
+## 4. Polygon inference
 
-Use the ResNet-50 small/medium configuration and the matching checkpoint. Inference is reported running normally in the author's cloud environment; evaluation of the newly generated predictions has not yet been confirmed.
+Use the ResNet-50 small/medium configuration and the matching checkpoint.
 
 Run from the repository root with a new output directory:
 
@@ -194,13 +162,13 @@ outputs/<run-directory>/
 └── inference.log
 ```
 
-The JSON contains image IDs, categories, confidence scores, bounding boxes, and polygon coordinates. The example uses a corner threshold of 0.4 and keeps polygons with at least three vertices and an area of at least 10. Keep these settings when comparing with the reference results.
+The JSON contains image IDs, categories, confidence scores, bounding boxes, and polygon coordinates. The example uses a corner threshold of 0.4 and keeps polygons with at least three vertices and an area of at least 10.
 
 If you change `--iter`, update the prediction file path in the evaluation command accordingly. The inference entry point exports JSON; it does not generate new visualization images.
 
-## 7. COCO Segmentation evaluation
+## 5. COCO Segmentation evaluation
 
-Evaluate newly generated predictions against ground-truth polygons. If using a new terminal, first restore `RUN_DIR` to the directory used in Section 6.
+Evaluate newly generated predictions against ground-truth polygons.
 
 ```bash
 python scripts/evaluation.py \
@@ -217,59 +185,19 @@ The output statistics file is:
 test.stats.predictions_2842654.json
 ```
 
-The original evaluation protocol is retained for comparison with previous experiments:
+## 6. Results and visualizations
 
-- Polygon segmentation IoU is used to report AP, AP50, AP75, size-specific AP, and AR metrics.
-- Evaluation includes only image IDs appearing in the prediction JSON, rather than all validation images by default.
-- The AR summary contains AR, AR50, AR75, and size-specific AR. It differs from the default AR@1, AR@10, and AR@100 summary.
-- If a statistics file with the same name already exists, evaluation skips recomputation. Use a new directory for new predictions.
-
-Any additional evaluation over the full validation-image list should be reported separately with its protocol and reference values.
-
-## 8. Results and visualizations
-
-### 8.1 Quantitative results
-
-The following results come from the supplied reference predictions for the released small/medium building checkpoint. Independent local CPU recomputation matched all 12 supplied statistics exactly.
-
-| Metric | Result (%) |
-|---|---|
-| AP | 83.8830 |
-| AP50 | 94.5579 |
-| AP75 | 91.3786 |
-| AR | 87.9980 |
-
-All metrics are available in `reference_results/test.stats.predictions_2842654.json`. The reference JSON contains 485,762 polygons across 57,177 images; the validation list contains 60,317 images. See Section 7 for the evaluated image range and AR definitions.
-
-These values apply only to the released small/medium model and exclude the large-building branch and merged predictions. Recomputing metrics from reference predictions does not establish that newly generated predictions match them. See `VALIDATION.md` for the verification scope.
-
-### 8.2 Example predictions
-
-Two supplied examples show boxes, contour lines, and point markers. A precise color legend remains pending author confirmation.
+The building extraction results of PEVFormer are shown in the following two images.
 
 ![Visualization for CrowdAI validation image 245](visualize/000000000245.jpg)
 
-*Example 1: validation image 245, showing building-region boxes and contour points.*
-
 ![Visualization for CrowdAI validation image 247](visualize/000000000247.jpg)
 
-*Example 2: validation image 247, showing densely arranged buildings.*
-
-This release includes the two examples, reference statistics, and evaluation code. The full reference prediction JSON is too large for this Git release; an external download link is pending. Videos and GIS exports are not required for this release.
-
-## 9. Usage notes
-
-- Only the small/medium building model is provided; the large-building branch and branch merging are excluded.
-- Inference and evaluation need validation data only, not training data.
-- Custom images require proposals with consistent image IDs, image sizes, categories, and box coordinates.
-- Use the matching source, configuration, and checkpoint. Do not rename checkpoint keys manually; check release versions if loading reports missing/unexpected keys or shape mismatches.
-- AP/AR evaluation of existing predictions can run independently. Model inference requires Detectron2 and the custom CUDA operator.
-
-## 10. Acknowledgements
+## 7. Acknowledgements
 
 This project is based on [RoIPoly](https://github.com/HeinzJiao/RoIPoly) and benefits from the public implementations of [Sparse R-CNN](https://github.com/PeizeSun/SparseR-CNN), [Deformable DETR](https://github.com/fundamentalvision/Deformable-DETR), and [RoomFormer](https://github.com/ywyue/RoomFormer). We thank their authors for sharing their work.
 
-## 11. License
+## 8. License
 
 **This section is a draft. The final project license will be determined by the root LICENSE file once confirmed, together with applicable third-party licenses.**
 
@@ -281,7 +209,3 @@ For project code that the authors are entitled to license, the intended license 
 - The software is provided as is, without warranties.
 
 Third-party components retain their own licenses and copyright notices. This section does not replace or override their terms. Conditions for pretrained checkpoints and datasets will be specified in their download information.
-
-## 12. Issues
-
-Report problems through [GitHub Issues](https://github.com/entropia-lw/PEVFormer/issues), including environment versions, the command used, and the error log.

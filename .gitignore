@@ -9,7 +9,7 @@ __pycache__/
 build/
 dist/
 weights/*.pth
-reference_results/predictions_*.json
+reference_results/
 _release_audit/
 outputs/
 output/

@@ -2,13 +2,13 @@
   "files": [
     {
       "path": ".gitignore",
-      "bytes": 227,
-      "sha256": "dbe497c93aef03828ca683333dae6e193439d8ba9eec19fd0445fbd99ffbe33d"
+      "bytes": 209,
+      "sha256": "b2666b78a6825bd09ba8e9ed4094f29498a29a97fd91530278ca02cbcfb2b2dd"
     },
     {
       "path": "README.md",
-      "bytes": 13732,
-      "sha256": "62ded7e6ab3a52256d4c2096af45acbd5185fed13c5f64e37bb14934533966c4"
+      "bytes": 8145,
+      "sha256": "d5c05d5ea5eafd5d94c4ff3ca1f731b8928e63f3880abe71509e5b4628c3069c"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -17,8 +17,8 @@
     },
     {
       "path": "VALIDATION.md",
-      "bytes": 2312,
-      "sha256": "19ec91efcb6bb8a4989a399649886d5fc7d027973cdba4cf1598cbb9cf472633"
+      "bytes": 1256,
+      "sha256": "ddcf7d444cb32eedc21410a56051b5a6d6f615c0548a91528fcfe013e22971c0"
     },
     {
       "path": "configs/Base-PEVFormer.yaml",
@@ -146,11 +146,6 @@
       "sha256": "4a46456786e5790e27e98ae205472deb3d9b2ad729289765736c6044d5da8016"
     },
     {
-      "path": "reference_results/test.stats.predictions_2842654.json",
-      "bytes": 338,
-      "sha256": "ac1b2ffd14c1486828f0528279cc01b7b185a4901d3126eb5f4b00085a44e7aa"
-    },
-    {
       "path": "requirements-eval.txt",
       "bytes": 18,
       "sha256": "7638e6bee70ac5b25d9d1803c9e2fe7951dd1f421f73fa083e11964ef35c9e02"
@@ -208,16 +203,6 @@
       "sha256": "1bdbb56ff1354b61eb3c6cc0556f06d4491d6299e0925a2c6214d630253c019b"
     },
     {
-      "path": "reference_results/predictions_2842654.json",
-      "bytes": 225972244,
-      "sha256": "f76d03bba40f448ed65deccb928d1dfe96fe5ea0338c1be889af97845c2fca0d"
-    },
-    {
-      "path": "reference_results/test.stats.predictions_2842654.json",
-      "bytes": 338,
-      "sha256": "ac1b2ffd14c1486828f0528279cc01b7b185a4901d3126eb5f4b00085a44e7aa"
-    },
-    {
       "path": "visualize/000000000245.jpg",
       "bytes": 51861,
       "sha256": "865d09c451036a51b157754f9fdcfe297c7a5034d403e2faf3d2e54ece13bb76"
@@ -228,5 +213,5 @@
       "sha256": "b9d44529a158c98473f5031e9898659e3b001e8cb721761421550fd62145cd5a"
     }
   ],
-  "validation": "See VALIDATION.md for local checks and author-reported cloud inference status."
+  "validation": "See VALIDATION.md for the author's confirmed end-to-end inference and evaluation status."
 }
