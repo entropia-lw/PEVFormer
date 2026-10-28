@@ -13,3 +13,6 @@ reference_results/predictions_*.json
 _release_audit/
 outputs/
 output/
+CODE_CHANGES.md
+README_draft_zh.md
+RELEASE_CHECKLIST.md
