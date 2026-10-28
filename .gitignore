@@ -16,3 +16,5 @@ output/
 CODE_CHANGES.md
 README_draft_zh.md
 RELEASE_CHECKLIST.md
+VALIDATION.md
+release_manifest.json
