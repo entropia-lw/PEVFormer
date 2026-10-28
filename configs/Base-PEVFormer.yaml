@@ -1,0 +1,51 @@
+MODEL:
+  META_ARCHITECTURE: PEVFormer
+  WEIGHTS: weights/model_2842654.pth
+  PIXEL_MEAN:
+  - 123.675
+  - 116.28
+  - 103.53
+  PIXEL_STD:
+  - 58.395
+  - 57.12
+  - 57.375
+  BACKBONE:
+    NAME: build_resnet_fpn_backbone
+  RESNETS:
+    OUT_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+  FPN:
+    IN_FEATURES:
+    - res2
+    - res3
+    - res4
+    - res5
+  ROI_HEADS:
+    IN_FEATURES:
+    - p2
+    - p3
+    - p4
+    - p5
+  ROI_BOX_HEAD:
+    POOLER_TYPE: ROIAlignV2
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 2
+  PEVFormer:
+    USE_BAFE: true
+    CONTOUR_LOSS_WEIGHT: 10.0
+    CONTOUR_WARMUP_ITERS: 0
+    BAFE:
+      GRID_SIZE: 7
+      SCALING_FACTOR: 4.0
+      BUFFER_WIDTH: 3
+      NUM_HEADS: 8
+SEED: 40244023
+INPUT:
+  FORMAT: RGB
+DATALOADER:
+  FILTER_EMPTY_ANNOTATIONS: false
+  NUM_WORKERS: 4
+VERSION: 2

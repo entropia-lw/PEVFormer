@@ -1,0 +1,15 @@
+data/
+EVPNet_small_final/
+venv/
+__pycache__/
+*.pyc
+*.pyd
+*.so
+*.egg-info/
+build/
+dist/
+weights/*.pth
+reference_results/predictions_*.json
+_release_audit/
+outputs/
+output/
